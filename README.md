@@ -3,7 +3,7 @@
 #### 项目描述
 
 ```js
-基于Ethereum平台，使用Solidity、Nodejs、React等技术实现DAICO众筹项目
+基于Ethereum平台，使用Solidity、Nodejs、Vue等技术实现DAICO众筹项目
 
 ```
 
