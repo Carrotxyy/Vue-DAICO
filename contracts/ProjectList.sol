@@ -143,7 +143,7 @@ contract Project is ERC20Interface{
         // 设置开始时间
         startTime   = now;
         // 设置投资关闭时间
-        endTime     = startTime + daysAfter;
+        endTime     = startTime + daysAfter days;
         // 设置额外奖励时间
         rewardTime  = startTime + 1 days;
 
@@ -462,7 +462,7 @@ contract Project is ERC20Interface{
     }
 
     // 如果拥有超过50%的投资者们终止合约，则进行将剩余ether返还
-    function Cashback() payable{
+    function Cashback() internal{
         uint balanceWei = address(this).balance;
         uint per = balanceWei / total * 10 * 18;
         for(uint i = 0 ; i < addresses.length ; i++){

@@ -1,19 +1,38 @@
 <template>
-    <div>
+    <div id="jj">
 
-        <el-menu default-active="2" class="el-menu-vertical-demo">
-            <el-menu-item index="1">
+        <el-menu default-active="1" class="el-menu-vertical-demo" router="true">
+            <el-menu-item index="1" route="/">
                 <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
+                <span slot="title">首页</span>
             </el-menu-item>
-            <el-menu-item index="2" >
-                <i class="el-icon-document"></i>
-                <span slot="title">导航三</span>
+            <el-menu-item index="2"  route="/project-hall">
+                <i class="el-icon-s-home"></i>
+                <span slot="title">项目大厅</span>
             </el-menu-item>
-            <el-menu-item index="3">
-                <i class="el-icon-setting"></i>
-                <span slot="title">导航四</span>
-            </el-menu-item>
+            <el-submenu index="3">
+                <template slot="title">
+                    <i class="el-icon-setting"></i>
+                    <span>项目管理</span>
+                </template>
+                <el-menu-item-group>
+                    <template slot="title" class="group-title">
+                        <i class="el-icon-s-custom"></i>
+                        投资者管理
+                    </template>
+                    <el-menu-item index="3-1"  route="/investor/vote-centre">投票中心</el-menu-item>
+                    <el-menu-item index="3-2" route="/investor/tap">提升TAP</el-menu-item>
+                    <el-menu-item index="3-3" route="/investor/stop">终止合约</el-menu-item>
+                </el-menu-item-group>
+                <el-menu-item-group>
+                    <template slot="title"  class="group-title">
+                        <i class="el-icon-s-platform"></i>
+                        开发者管理
+                    </template>
+                    <el-menu-item index="3-4" route="/developer/apply">申请资金</el-menu-item>
+                    <el-menu-item index="3-5" route="/developer/stop">终止合约</el-menu-item>
+                </el-menu-item-group>
+            </el-submenu>
         </el-menu>
     </div>
 </template>
@@ -24,6 +43,15 @@
     }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss" >
+    .el-menu-vertical-demo{
+        el-submenu{
+            el-menu-item-group{
+                template{
+                    color: aquamarine ;
+                }
+            }
+             
+        }
+    }
 </style>

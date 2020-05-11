@@ -3,23 +3,19 @@
     
     <el-container>
       <!-- 左侧导航栏 -->
-      <el-aside width="200px">
+      <el-aside width="200px" :style="{'min-height':'100vh'}">
         <left-nav />
       </el-aside>
       <el-container>
-        <el-header>智能DAICO</el-header>
+        <el-header class="head">智能DAICO</el-header>
         <!-- 右侧两个显示区域 -->
-        <el-main>
-          <el-row :gutter="40">
-            <el-col :span="12"><div class="grid-content bg-purple">333</div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple">333</div></el-col>
-          </el-row>
+        <el-main :style="{'padding': '0px'}">
+          <el-card :body-style="{ padding: '10px','min-height':'100vh' }">
+            <router-view/>
+          </el-card>
         </el-main>
       </el-container>
     </el-container>
-    
-
-    <router-view/>
   </div>
 </template>
 
@@ -33,4 +29,11 @@ export default {
 </script>
 
 <style lang="scss">
+  #app{
+    .head{
+      background: linear-gradient(to right, rgb(54, 209, 220), rgb(91, 134, 229));
+      line-height: 60px;
+      color: white;
+    }
+  }
 </style>
