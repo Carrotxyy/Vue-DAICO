@@ -1,14 +1,14 @@
 <template>
     <div class="project" title="查看详情">
         <div class="content" >
-            <h4> 项目标题 </h4>
+            <h4> {{data.describe}} </h4>
             <div >
                 <table>
-                    <tr  v-for="item in Object.keys(data)" :key="item">
+                    <tr  v-for="item in Object.keys(trimData)" :key="item">
                         <td class="key">
                             <strong>{{item}}:</strong>
                         </td>
-                        <td>
+                        <td class="value">
                             <span> {{data[item]}} </span>
                         </td>
                     </tr>
@@ -22,7 +22,21 @@
     export default {
         props : ["data"],
         methods:{
-        }
+            delKey(obj,keys){
+                keys.map(key=>{
+                    delete obj[key]
+                })
+                return obj
+            }
+        },
+        computed: {
+            // 修剪data的属性
+            trimData(){
+                // 深拷贝this.data,如果直接修改this.data会影响到父组件
+                const deepCloneData = JSON.parse(JSON.stringify(this.data))
+                return this.delKey(deepCloneData,["owner","balance","smybol","tokenTotal","endTime","address"])
+            }
+        },
     }
 </script>
 
@@ -31,7 +45,7 @@
         text-align: center;
         cursor:pointer;
         .content{
-            border: 2px solid;
+            border: 2px solid #83d8ef;
             border-radius: 10px;
             padding: 10px;
             table{
@@ -39,6 +53,12 @@
                     .key{
                         width: 50px;
                         text-align: right;
+                    }
+                    .value{
+                        text-align: left;
+                        span{
+                            margin-left: 20px;
+                        }
                     }
                 }
             }

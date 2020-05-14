@@ -12,33 +12,55 @@
 </template>
 
 <script>
-    import web3 from "@/libs/connectWeb3"
+    import isLogin from "@/libs/isLoginMetamask"
     import Vue from "vue"
 
     export default {
         data(){
             return{
+                
                 ethereumLogo:require("../../static/images/ethereum-logo.png")
             }
         },
         methods:{
-            login(){
-                web3
-                if(web3){
-                    Vue.use(web3)
+            async login(){
+                const account = await isLogin()
+                if(account){
+                    // 项目其他地方直接 this.$web3 就能访问了
+                    Vue.prototype.$web3 = web3;
+                    Vue.prototype.$account = account
                     this.$notify({
                         title: '授权情况',
                         message: '授权成功',
                         position: 'bottom-right',
                         type: 'success'
                     });
+                    // 跳转至指定的路由
+                    this.$router.push(this.$route.query.redirect)
                 }else{
-                    this.$notify({
-                        title: '授权情况',
-                        message: '授权失败，请查看是否下载metamask',
-                        position: 'bottom-right',
-                        type: 'error'
-                    });
+                    
+                    if(typeof window.ethereum !== "undefined"){
+                        window.ethereum.enable()
+                        .catch(reject=>{
+                            this.$notify({
+                                title: '授权情况',
+                                message: '授权失败',
+                                position: 'bottom-right',
+                                type: 'error'
+                            });
+                        })
+                        .then(accounts =>{
+                            Vue.prototype.$web3 = web3;
+                            Vue.prototype.$account = account
+                            this.$notify({
+                                title: '授权情况',
+                                message: '授权成功',
+                                position: 'bottom-right',
+                                type: 'success'
+                            });
+                        })
+                    }
+                    
                 }
             }
         }

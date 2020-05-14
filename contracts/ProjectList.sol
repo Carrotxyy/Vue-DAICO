@@ -52,9 +52,9 @@ contract ProjectList{
     // 项目集合
     address[] public  projectList;
 
-    function createProject(string _name,string _smybol,uint daysAfter,uint _min,uint _max,uint _total,string _des,uint _tap) public {
-        // 生成项目
-        address addr = new Project(msg.sender,_name,_smybol,daysAfter,_min,_max,_total,_des,_tap);
+    function createProject(string _name,string _smybol,uint daysAfter,uint _min,uint _max,uint _total,string _des) public {
+        // 生成项目  , tap = total/10
+        address addr = new Project(msg.sender,_name,_smybol,daysAfter,_min,_max,_total,_des,_total/10);
         
         projectList.push(addr);
     }
@@ -143,7 +143,7 @@ contract Project is ERC20Interface{
         // 设置开始时间
         startTime   = now;
         // 设置投资关闭时间
-        endTime     = startTime + daysAfter days;
+        endTime     = startTime + (daysAfter * 1 days);
         // 设置额外奖励时间
         rewardTime  = startTime + 1 days;
 

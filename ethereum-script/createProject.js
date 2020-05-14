@@ -14,7 +14,7 @@ const address = require("../src/build/addresses.json")
 async function create(){
     let accounts = await web3.eth.getAccounts()
     let tx = {
-        from : accounts[0],
+        from : "0xCC1794895950a2688679f86FeEf3818e54b728B0",
         gas : 5000000
     }
     
@@ -34,7 +34,6 @@ async function create(){
             name:"好基友",
             smybol:"Y",
             daysAfter:2,
-            tap:web3.utils.toWei('10', 'ether'),
             des: '罗密欧',
             min: web3.utils.toWei('10', 'ether'),
             max: web3.utils.toWei('20', 'ether'),
@@ -46,7 +45,7 @@ async function create(){
     // const project = await Promise.all( p.map(item =>  instance.methods.createProject(item.des,item.min,item.max,item.total).send(tx)) )
     for(item of p){
     
-        await instance.methods.createProject(item.name,item.smybol,item.daysAfter,item.min,item.max,item.total,item.des,item.tap).send(tx)
+        await instance.methods.createProject(item.name,item.smybol,item.daysAfter,item.min,item.max,item.total,item.des).send(tx)
     }
                                           
 
