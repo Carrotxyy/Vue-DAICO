@@ -74,7 +74,7 @@
         methods: {
             async create(){
                 // 检验是否为正整数
-                let regex  = /^\+?[1-9][0-9]*$/
+                let regex  = /^\+?[0-9]*$/
                 if(!regex.test(this.min) || !regex.test(this.max) || !regex.test(this.total) || !regex.test(this.daysAfter) ){
                     this.$notify({
                         title: '创建项目',

@@ -106,6 +106,7 @@ contract Project is ERC20Interface{
 
     // 投资者   表决类型 1.发起终止合约  2.提升tap
     /*
+        是由谁发起的        owner
         对行为的描述        des
         表决 的 类型        voteType
         赞同的投资者        support
@@ -114,6 +115,7 @@ contract Project is ERC20Interface{
         投票是否结束        isAccomplish
     */
     struct InvestorVote{
+        address     owner;
         string      des;
         uint8       voteType;
         address[]   support;
@@ -251,7 +253,7 @@ contract Project is ERC20Interface{
         require(now < endTime,"投资窗口已关闭！");
 
         // 投资者预计得到的token. 1,000  Tokens per 1ETH
-        uint tokens;
+        uint tokens ;
         if(now <= rewardTime){
             // 如果在奖励时间内，则奖励200token
             tokens = msg.value * 1200;
@@ -266,26 +268,38 @@ contract Project is ERC20Interface{
 
     
     // 合约缔造者申请资金,每次只能有一个申请处于待处理中，当着个申请投票结束后，才能进行下一笔申请
-    function createPayment(string _des,uint _amount,address _recevier) public MustOwner{
+    function createPayment(string memory _des,uint _amount,address _recevier) public  MustOwner {
         
-        require(paymentList[paymentList.length-1].isAccomplish , "有申请处于投票中！");
-        require(_amount <= tap , "提取量不能大于上限tap");
-        require(address(this).balance <= _amount,"申请资金不能大于合约余额");
+        if(paymentList.length > 0){
+            require(paymentList[paymentList.length-1].isAccomplish , "runing");
+
+        }
+        require(_amount <= tap , "no > tap");
+        require(address(this).balance >= _amount,"no > balance");
 
         Payment memory p = Payment({
             des             : _des,
             amount          : _amount,
             recevier        : _recevier,
-            support         : new address[](0),
-            oppose          : new address[](0),
+            support         : new address[](1),
+            oppose          : new address[](1),
             isAccomplish    : false
         });
 
         paymentList.push(p);
     }
 
+    // 获取申请资金列表的长度
+    function getPaymentLength()public view returns(uint){
+        return paymentList.length;
+    }
+    // 获取资金申请的情况
+    function getPayment(uint index)public returns(string,uint,address,uint,uint,bool){
+        return (paymentList[index].des,paymentList[index].amount,paymentList[index].recevier,paymentList[index].support.length,paymentList[index].oppose.length,paymentList[index].isAccomplish);
+    }
+
     // 投资者投票
-    function approvePayment(bool isOrNo) public {
+    function approvePayment(bool isOrNo) public returns(bool){
         require(paymentList.length > 0 , "暂无投票");
         Payment storage p = paymentList[paymentList.length-1];
         require(p.isAccomplish,"投票已结束");
@@ -300,6 +314,7 @@ contract Project is ERC20Interface{
             p.oppose.push(msg.sender);
         }
         veri(p);
+        return true;
     }
 
     // 判断当前申请资金是否能结算(发放 | 拒绝)
@@ -350,7 +365,7 @@ contract Project is ERC20Interface{
     }
 
     // 发起终止合约
-    function stopContract() public{
+    function stopContract() public returns(bool){
         if(msg.sender == owner){
             // 拥有者销毁合约,直接返还资金
             Cashback();
@@ -359,6 +374,7 @@ contract Project is ERC20Interface{
             require(ivList[ivList.length-1].isAccomplish,"当前已有投票待处理中");
 
             InvestorVote memory iv = InvestorVote({
+                owner           : msg.sender,
                 des             : "对项目方太失望，提前终止合约",
                 voteType        : 1,
                 support         : new address[](0),
@@ -371,11 +387,12 @@ contract Project is ERC20Interface{
             // 触发事件，返回情况
             emit Stop(total,countToken(iv.support),countToken(iv.oppose));
         }
+        
     }
 
     
     // 发起提升tap
-    function promoteTap() public {
+    function promoteTap() public  {
         if(msg.sender == owner){
             require(false,"创始者不能提升tap");
         }
@@ -385,6 +402,7 @@ contract Project is ERC20Interface{
         
 
         InvestorVote memory iv = InvestorVote({
+            owner           : msg.sender,
             des             : "对项目方的进度很满意，提升tap加快进展",
             voteType        : 2,
             support         : new address[](0),
@@ -395,10 +413,12 @@ contract Project is ERC20Interface{
         iv.support[0] = msg.sender;
         ivList.push(iv);
         // 触发事件，返回情况
-        emit Stop(total,countToken(iv.support),countToken(iv.oppose));
+        Stop(total,countToken(iv.support),countToken(iv.oppose));
     }
 
-
+    function ivLength()public view returns(uint){
+        return ivList.length;
+    }
     
 
     //  进行投票
@@ -474,7 +494,10 @@ contract Project is ERC20Interface{
         }
     }
 
-    
+    // 是否是投资者
+    function isInvest(address _account)public view returns(bool){
+        return isExist(addresses,_account);
+    }
 
     function()payable public{}
 }

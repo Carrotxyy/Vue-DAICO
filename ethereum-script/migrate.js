@@ -18,7 +18,7 @@ async function deployContract(){
     // 获取用户列表
     // const account = await web3.eth.getAccounts()
     // 构造交易对象
-    const tx = {from : "0xCC1794895950a2688679f86FeEf3818e54b728B0",gas:5000000}
+    const tx = {from : "0x7b81126bA7F56b098B13620b389c2335bEB58660",gas:5000000}
     // 部署合约
     const instance = await new web3.eth.Contract( JSON.parse(interface) )
                                     .deploy({data:"0x" + bytecode})

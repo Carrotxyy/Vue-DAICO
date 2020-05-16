@@ -6,7 +6,7 @@
                     <el-col :span="6" v-for="obj in runData" :key="obj.address">
                         <div class="grid-content bg-purple" @click="showDetails(obj)">
                             
-                            <project :data="obj"  />
+                            <project :data="obj" :isTrim="true" />
                             
                         </div>
                     </el-col>
@@ -17,7 +17,7 @@
                     <el-col :span="6" v-for="obj in endData" :key="obj.address">
                         <div class="grid-content bg-purple" @click="showDetails(obj)">
                             
-                            <project :data="obj"  />
+                            <project :data="obj" :isTrim="true" />
                             
                         </div>
                     </el-col>
@@ -88,9 +88,9 @@
             },
             async investIng(){                // 点击投资按钮
                 // 检验是否为正整数
-                let regex  = /^\+?[1-9][0-9]*$/
+                let regex  = /^\+?[0-9]*$/
                 
-                if(!regex.test(this.money) || this.money < this.obj.min || this.money > this.obj.max){
+                if(!regex.test(this.money) || parseInt(this.money) < parseInt(this.obj.min) || parseInt(this.money) > parseInt(this.obj.max)){
                     this.$notify({
                         title: '投资情况',
                         message: '投资失败 ( 请按照项目要求给出合理的投资金额 !)',

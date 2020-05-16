@@ -87,6 +87,86 @@ const API = {
         obj.total = web3.utils.toWei(obj.total)
         await projectList.methods.createProject(...Object.values(obj))
                                     .send(tx)
+    },
+    applyMoney : async function(contractAddr,account,obj){              // 申请资金
+        const tx = {
+            from : account,
+            gas : 2000000
+        }
+        obj.amount = web3.utils.toWei(obj.amount)
+        // 项目实例
+        const instance = await project(contractAddr)
+        let res = await instance.methods.createPayment(...Object.values(obj))
+                                        .send(tx)
+        console.log("res",res)
+    },
+    applyList : async function(contractAddr){       // 获取申请列表
+        // 项目实例
+        const instance = await project(contractAddr)
+        let length = await instance.methods.getPaymentLength().call()
+        let applyList = []
+        for(let i = 0 ; i < length ; i++){
+            let data = await instance.methods.getPayment(0).call()
+            console.log(data)
+        }
+        
+    },
+    investProject : async function(account){               // 投资者投资的项目
+        let obj = await this.getProject()   // 获取所有完成、未完成的项目
+        let ends = []
+        let runs = []
+
+        for (let i = 0 ; i < obj.runs.length ; i++) {
+            let runProject = obj.runs[i]
+            // 获取对象实例
+            let instance = await project(runProject.address)
+            // 是否是投资者
+            let res = await instance.methods.isInvest(account).call()
+            if(res){
+                let tokens = await instance.methods.balanceOf(account).call()
+                runProject.holdings = web3.utils.fromWei(tokens)
+                runs.push(runProject)
+            }
+        }
+
+        for (let i = 0 ; i < obj.ends.length ; i++) {
+            let endProject = obj.ends[i]
+            // 获取对象实例
+            let instance = await project(endProject.address)
+            // 是否持有token
+            let num = await instance.methods.balanceOf(account)
+            if(num > 0){
+                endProject.holdings = web3.utils.fromWei(num)
+                ends.push(endProject)
+            }
+        }
+
+        return {ends,runs}
+    },
+    investPromoteTap : async function(contractAddr,account){             // 投资者发起提升tap
+        // 获取实例
+        let instace = await project(contractAddr)
+        
+        let tx = {
+            from : account,
+            gas : 5000000
+        }
+        console.log("instace:",instace)
+        // 监听合约内部事件
+        instace.events.Stop((err,res)=>{
+            if(!err){
+                console.log(res)
+            }else{
+                console.log(err)
+            }
+            watchEvent.stopWatching()
+        })
+        // 发起投票
+        await instace.methods.promoteTap().send(tx)
+        let l = await instace.methods.ivLength().call()
+        console.log("length:",l)
+        
+
     }
 }
 

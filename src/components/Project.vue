@@ -20,18 +20,24 @@
 
 <script>
     export default {
-        props : ["data"],
+        props : ["data","isTrim"],
         methods:{
             delKey(obj,keys){
                 keys.map(key=>{
                     delete obj[key]
                 })
                 return obj
-            }
+            },
+            
+
         },
         computed: {
             // 修剪data的属性
             trimData(){
+                if(!this.isTrim){
+                    // 不需要修剪
+                    return this.data
+                }
                 // 深拷贝this.data,如果直接修改this.data会影响到父组件
                 const deepCloneData = JSON.parse(JSON.stringify(this.data))
                 return this.delKey(deepCloneData,["owner","balance","smybol","tokenTotal","endTime","address"])

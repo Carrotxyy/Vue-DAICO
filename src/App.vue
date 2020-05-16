@@ -3,7 +3,7 @@
     
     <el-container>
       <!-- 左侧导航栏 -->
-      <el-aside width="200px" :style="{'min-height':'100vh'}">
+      <el-aside width="200px" :style="{'min-height':'100vh','position': 'fixed','top':'0'}">
         <left-nav />
       </el-aside>
       <el-container>
@@ -34,6 +34,9 @@ export default {
       background: linear-gradient(to right, rgb(54, 209, 220), rgb(91, 134, 229));
       line-height: 60px;
       color: white;
+    }
+    .is-vertical{
+      margin-left: 200px;
     }
   }
 </style>
