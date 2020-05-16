@@ -80,4 +80,4 @@
 
 #### 合约流程
 
-![](.\mdImgs\flowChart.jpg)
+![](https://github.com/Carrotxyy/Vue-DAICO/blob/master/mdImgs/flowChart.jpg)
