@@ -63,7 +63,6 @@ contract ProjectList{
     function getProjects() public view returns(address[]){
         return projectList;
     }
-    
 
 }
 
@@ -281,8 +280,8 @@ contract Project is ERC20Interface{
             des             : _des,
             amount          : _amount,
             recevier        : _recevier,
-            support         : new address[](1),
-            oppose          : new address[](1),
+            support         : new address[](0),
+            oppose          : new address[](0),
             isAccomplish    : false
         });
 
@@ -369,6 +368,7 @@ contract Project is ERC20Interface{
         if(msg.sender == owner){
             // 拥有者销毁合约,直接返还资金
             Cashback();
+            return true;
         }else{
             require(balances[msg.sender] > 0 , "没持有token无权限");
             require(ivList[ivList.length-1].isAccomplish,"当前已有投票待处理中");
@@ -484,13 +484,20 @@ contract Project is ERC20Interface{
     // 如果拥有超过50%的投资者们终止合约，则进行将剩余ether返还
     function Cashback() internal{
         uint balanceWei = address(this).balance;
-        uint per = balanceWei / total * 10 * 18;
+        uint totalWei = total * 10 * 18;
+        uint pre = totalWei.div(balanceWei);
+
         for(uint i = 0 ; i < addresses.length ; i++){
             uint token = balances[addresses[i]] * 10 ** 18;
             uint toWei = per * token;
             addresses[i].transfer(toWei);
-            // 销毁token 
+            // 销毁token
             burn(addresses[i],balances[addresses[i]]);
+        }
+        if(address(this).balance < 100000){
+            // 确保合约中没有钱
+            // 销毁合约
+            selfdestruct(owner);
         }
     }
 

@@ -7,6 +7,7 @@ import DevProjectCenter from "../views/DevProjectCenter"
 import DevApply from "../views/DevApply"
 import InvProjectCenter from "../views/InvProjectCenter"
 import InvTap from "../views/InvTap"
+import DevStop from "../views/DevStop"
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,14 @@ Vue.use(VueRouter)
       requireAuth: true // 配置此条，进入页面前判断是否需要登陆
     },
     component: InvTap
+  },
+  {
+    path: '/developer/stop',
+    name: 'DevStop',
+    meta: {
+      requireAuth: true // 配置此条，进入页面前判断是否需要登陆
+    },
+    component: DevStop
   }
 ]
 

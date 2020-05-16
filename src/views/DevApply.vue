@@ -14,7 +14,7 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="24" v-for="obj in runData" :key="obj.address">
+                    <el-col :span="24" v-for="obj in runData" :key="obj.index">
                         <div class="grid-content bg-purple" >
                             
                             <project :data="obj"  :isTrim="false" />
@@ -78,6 +78,7 @@
 
 <script>
     import API from "@/libs/project-api"
+    import project from "@/components/Project"
     export default {
         data : function(){
             return{
@@ -108,7 +109,17 @@
         },
         methods: {
             async search(){
-                await API.applyList(this.applyPro)
+                let datas = await API.applyList(this.applyPro)
+                if(datas.length <= 0){
+                    this.$notify({
+                        title: '申请情况',
+                        message: '暂无资金申请',
+                        position: 'bottom-right',
+                        type: 'error'
+                    });
+                    return
+                }
+                this.runData = datas
             },
             async apply(){
                 if(this.desMes === "" && this.amountMes === "" && this.recMes === ""){
@@ -187,6 +198,9 @@
                 }
             }
 
+        },
+        components:{
+            project
         }
     }
 </script>

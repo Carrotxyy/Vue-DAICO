@@ -3,7 +3,7 @@
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="等待投资项目" name="wait">
                 <el-row :gutter="20">
-                    <el-col :span="6" v-for="obj in runData" :key="obj.address">
+                    <el-col :span="12" v-for="obj in runData" :key="obj.address">
                         <div class="grid-content bg-purple" @click="showDetails(obj)">
                             
                             <project :data="obj" :isTrim="true" />

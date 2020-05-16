@@ -4,8 +4,10 @@ import web3 from "./connectWeb3"
 
 
 const API = {
-    currentAccount : async function(){
+    utils : {
+        contractIsExist : async function(contractAddr){     // 判断当前合约地址是否存在
 
+        }
     },
     loading : async function(){ // 加载所有项目的数据
         // 获取所有项目地址
@@ -107,8 +109,20 @@ const API = {
         let applyList = []
         for(let i = 0 ; i < length ; i++){
             let data = await instance.methods.getPayment(0).call()
-            console.log(data)
+            // 构建对象
+            let payment = {
+                index           : i,
+                des             : data[0],
+                amount          : data[1],
+                recevier        : data[2],
+                support         : data[3],
+                oppose          : data[4],
+                isAccomplish    : data[5]
+            }
+            applyList.push(payment)
         }
+
+        return applyList
         
     },
     investProject : async function(account){               // 投资者投资的项目
@@ -167,6 +181,16 @@ const API = {
         console.log("length:",l)
         
 
+    },
+    devStop : async function(contractAddr,account){                     // 开发者终止合约
+        // 获取合约实例
+        const instance = await project(contractAddr)
+        const tx = {
+            from : account
+        }
+        let message = await instance.methods.stopContract().send(tx)
+        console.log("message:",message)
+        return true
     }
 }
 
